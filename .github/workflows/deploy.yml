@@ -8,16 +8,23 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
+    # Toutes les commandes 'run' seront lancées dans ./frontend
+    defaults:
+      run:
+        working-directory: ./frontend
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-1
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Build
         run: npm run build
