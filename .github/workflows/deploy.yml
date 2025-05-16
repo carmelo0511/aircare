@@ -1,66 +1,36 @@
-# CI/CD workflow: Build and deploy AirCare frontend to S3 & CloudFront
-# This workflow runs on every push to the `main` branch
-name: Deploy Frontend to S3 & CloudFront
+name: CI/CD
 
 on:
   push:
     branches:
-      - main  # Trigger when code is pushed to main
+      - main
 
 jobs:
-  build-and-deploy:
-    # Use latest Ubuntu runner
+  deploy:
     runs-on: ubuntu-latest
-
-    # All commands will run in the frontend/frontend directory by default
-    defaults:
-      run:
-        working-directory: frontend/frontend
-
     steps:
-      # 1) Checkout the repo
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
-      # 2) Debug: List directory structure to ensure paths
-      - name: Debug: List repo root
-        run: ls -R .
-
-      - name: Debug: List frontend directory
-        run: ls -R frontend
-
-      # 3) Setup Node.js environment
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'          # Use Node.js v18
-          cache: 'npm'                # Cache node_modules for faster builds
-
-      # 4) Install dependencies
-      - name: Install dependencies
-        run: npm ci                  # Clean install based on package-lock.json
-
-      # 5) Build production assets
-      - name: Build project
-        run: npm run build           # Generates optimized files into dist/
-
-      # 6) Configure AWS credentials for deploy
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}          # Stored in GitHub Secrets
-          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}  # Stored in GitHub Secrets
-          aws-region: ca-central-1        # Region of S3 bucket and CloudFront distribution
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
 
-      # 7) Sync build to S3 bucket
-      - name: Sync to S3
-        run: aws s3 sync dist/ s3://aircare-frontend-304783065136 --delete
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to S3
         env:
-          AWS_S3_BUCKET: aircare-frontend-304783065136  # Bucket name defined here for clarity
+          AWS_S3_BUCKET: aircare-frontend-304783065136
+        run: |
+          aws s3 sync ./build s3://$AWS_S3_BUCKET --delete
 
-      # 8) Invalidate CloudFront cache to propagate changes immediately
       - name: Invalidate CloudFront cache
         run: |
-          aws cloudfront create-invalidation \\
-            --distribution-id EYUPG0T86C3V0 \\
+          aws cloudfront create-invalidation \
+            --distribution-id EYUPG0T86C3V0 \
             --paths '/*'
+
