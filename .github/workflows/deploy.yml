@@ -9,7 +9,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-    # Toutes les commandes 'run' seront lancées dans ./frontend
     defaults:
       run:
         working-directory: ./frontend
@@ -33,7 +32,7 @@ jobs:
         env:
           AWS_S3_BUCKET: aircare-frontend-304783065136
         run: |
-          aws s3 sync ./build s3://$AWS_S3_BUCKET --delete
+          aws s3 sync ./dist s3://$AWS_S3_BUCKET --delete
 
       - name: Invalidate CloudFront cache
         run: |
