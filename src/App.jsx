@@ -1,37 +1,23 @@
-import React, { useEffect, useState } from "react";
-import AirCareApp from "./components/AirCareApp";
+import React from 'react';
 
-function App() {
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition((pos) => {
-      const { latitude, longitude } = pos.coords;
-
-      fetch("https://q2ntad65mi.execute-api.ca-central-1.amazonaws.com/Prod/airquality", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ lat: latitude, lon: longitude }),
-      })
-        .then((res) => res.json())
-        .then((resData) => {
-          console.log("🟢 Données API :", resData);
-          setData({
-            location: resData.city,
-            aqi: resData.aqi,
-            pm25: resData.pm25,
-            humidity: resData.humidity,
-            temperature: resData.temperature,
-          });
-        })
-        .catch((err) => console.error("Erreur API :", err));
-    });
-  }, []);
-
-  return <AirCareApp data={data} />;
+export default function App() {
+  return (
+    <div className="card">
+      <h1>Bienvenue sur AirCare</h1>
+      <p>Qualité de l’air en temps réel pour les utilisateurs asthmatiques</p>
+      <div>📍 Downtown Toronto</div>
+      <div className="metrics">
+        <div className="metric">
+          <span className="icon">⚠️</span>
+          <span className="value">42</span>
+          <span className="label">Indice AQI</span>
+        </div>
+        <div className="metric">
+          <span className="icon">💨</span>
+          <span className="value">12 μg/m³</span>
+          <span className="label">PM2.5</span>
+        </div>
+      </div>
+    </div>
+  );
 }
-
-export default App;
-
