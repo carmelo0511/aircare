@@ -25,7 +25,8 @@
 
 ## 📷 Architecture Diagram
 
-![Architecture Diagram](./A_2D_digital_architecture_diagram_illustrates_the_.png)
+![Architecture Diagram](./diagram.png)
+
 
 ---
 
