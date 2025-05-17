@@ -1,5 +1,7 @@
 # AirCare
 
+![Deploy Status](https://github.com/carmelo0511/aircare/actions/workflows/deploy.yml/badge.svg)
+
 **AirCare** is a real-time air quality monitoring app designed to alert asthmatic users when local air conditions are unsafe. It is built using a serverless architecture on AWS and deployed with a fully automated CI/CD pipeline.
 
 ---
@@ -25,7 +27,7 @@
 
 ## 📷 Architecture Diagram
 
-![Architecture Diagram](./A_2D_digital_architecture_diagram_illustrates_the_.png)
+![Architecture Diagram](./diagram.png)
 
 ---
 
