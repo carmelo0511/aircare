@@ -1,0 +1,58 @@
+/* reset minimal */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to bottom right, #e0f7fa, #80deea);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  padding: 24px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+}
+
+.card h1 {
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.card p {
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+.metrics {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 1rem;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.metric .icon {
+  font-size: 2rem;
+  margin-bottom: 0.25rem;
+}
+
+.metric .value {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.metric .label {
+  font-size: 0.85rem;
+  color: #777;
+}
