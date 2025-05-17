@@ -1,0 +1,18 @@
+{
+  "Comment": "Validation ACM pour aircare.tondomaine.com",
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "_f7ebe854bc891c915c0d3d236f790e1b.aircare.tondomaine.com.",
+        "Type": "CNAME",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "_fb392d3eb8f42a4f0e9f6420e6014e93.xlfgrmvvlj.acm-validations.aws."
+          }
+        ]
+      }
+    }
+  ]
+}

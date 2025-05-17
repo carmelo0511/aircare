@@ -1,12 +1,83 @@
-# React + Vite
+# AirCare
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![Deploy Status](https://github.com/carmelo0511/aircare/actions/workflows/deploy.yml/badge.svg)
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
+**AirCare** is a real-time air quality monitoring app designed to alert asthmatic users when local air conditions are unsafe. It is built using a serverless architecture on AWS and deployed with a fully automated CI/CD pipeline.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🚀 Features
+
+- Live air quality updates based on user location
+- AWS Lambda backend with API Gateway and DynamoDB
+- CI/CD pipeline using GitHub Actions
+- Frontend deployed to AWS S3 + CloudFront
+- Designed with accessibility and mobile responsiveness in mind
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend**: Vite, JavaScript, HTML, CSS
+- **Backend**: AWS Lambda (Node.js)
+- **Cloud Services**: S3, API Gateway, Lambda, DynamoDB, IAM
+- **CI/CD**: GitHub Actions
+
+---
+
+## 📷 Architecture Diagram
+
+![Architecture Diagram](./diagram.png)
+
+
+---
+
+## 🧑‍💻 Getting Started
+
+1. Clone the repository:
+   \`\`\`bash
+   git clone https://github.com/carmelo0511/aircare.git
+   cd aircare/frontend
+   \`\`\`
+
+2. Install dependencies:
+   \`\`\`bash
+   npm install
+   \`\`\`
+
+3. Run the app locally:
+   \`\`\`bash
+   npm run dev
+   \`\`\`
+
+---
+
+## 🌐 Live Demo
+
+👉 [View the app here](https://d302ogxiv8pwst.cloudfront.net)
+
+---
+
+## 📚 What I Learned
+
+- Setting up a serverless architecture with AWS
+- Automating deployments and builds with GitHub Actions
+- Using external APIs for real-time environmental data
+- Designing for accessibility and user health needs
+- Add GitHub Actions badge to README
+
+---
+
+## 📈 Future Improvements
+
+- Add login/authentication with Cognito or Firebase
+- Enable push notifications for alert thresholds
+- Add location-based filtering and user preferences
+
+---
+
+## 📄 License
+
+This project is open-source and available under the MIT License.

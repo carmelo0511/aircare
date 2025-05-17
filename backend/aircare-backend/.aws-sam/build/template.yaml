@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: "aircare-backend - API qualit\xE9 de l'air\n"
+Globals:
+  Function:
+    Timeout: 10
+    Runtime: nodejs18.x
+Resources:
+  AirQualityApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: AirQualityApi
+      StageName: Prod
+      Cors:
+        AllowOrigin: '''*'''
+        AllowMethods: '''POST,OPTIONS'''
+        AllowHeaders: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'''
+  GetAirQualityFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: GetAirQualityFunction
+      Handler: get-air-quality.lambdaHandler
+      Runtime: nodejs18.x
+      MemorySize: 128
+      Environment:
+        Variables:
+          API_KEY: b4fab802b434069299b0c77cb631ef97
+      Events:
+        AirQualityApiEvent:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: AirQualityApi
+            Path: /airquality
+            Method: post
+    Metadata:
+      SamResourceId: GetAirQualityFunction
+Outputs:
+  GetAirQualityApi:
+    Description: "Endpoint pour la qualit\xE9 de l'air"
+    Value:
+      Fn::Sub: https://${AirQualityApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/airquality
