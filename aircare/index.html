@@ -2,14 +2,26 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>AirCare - Qualité de l'air</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AirCare – Qualité de l'air</title>
   <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-  <h1>🌍 AirCare</h1>
-  <button onclick="getAirQuality()">Obtenir la qualité de l'air</button>
-  <p id="location"></p>
-  <div id="results"></div>
+  <div class="container">
+    <h1>🌍 AirCare</h1>
+    <p>Surveillez la qualité de l'air autour de vous en temps réel.</p>
+
+    <button onclick="getAirQuality()">Obtenir la qualité de l'air</button>
+
+    <div id="location" class="location"></div>
+    <div id="results" class="results"></div>
+  </div>
+  
+  <footer>
+    <p>Développé par Bryan Nakache – 2025</p>
+  </footer>
+
   <script src="script.js"></script>
 </body>
 </html>

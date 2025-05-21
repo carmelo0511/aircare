@@ -7,14 +7,18 @@ async function getAirQuality() {
   navigator.geolocation.getCurrentPosition(async (position) => {
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
-    document.getElementById("location").innerText = `Position : ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+    document.getElementById("location").innerText =
+      `Position : ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
 
     try {
-      const response = await fetch("https://khwxkc19ui.execute-api.ca-central-1.amazonaws.com/air", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lat, lon })
-      });
+      const response = await fetch(
+        "https://khwxkc19ui.execute-api.ca-central-1.amazonaws.com/air",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ lat, lon })
+        }
+      );
 
       const data = await response.json();
       const aqi = data.list[0].main.aqi;
