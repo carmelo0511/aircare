@@ -23,7 +23,7 @@ jobs:
 
       - name: Deploy Frontend to S3
         run: |
-          aws s3 sync . s3://$S3_BUCKET_NAME --exclude "backend/*" --delete
+          aws s3 sync ./aircare s3://$S3_BUCKET_NAME --exclude "backend/*" --delete
         env:
           S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
 
@@ -35,8 +35,8 @@ jobs:
 
       - name: Package Lambda
         run: |
-          cd backend
-          zip -r ../lambda_deploy.zip index.js node_modules
+          cd aircare/backend
+          zip -r ../../lambda_deploy.zip index.js node_modules
 
       - name: Deploy Lambda Function
         run: |
