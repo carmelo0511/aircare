@@ -1,83 +1,97 @@
-# 🌍 AirCare – Surveillance de la qualité de l'air en temps réel
+# 🌍 AirCare – Real-time Air Quality Monitoring
 
-**AirCare** est une application cloud serverless qui affiche en temps réel l'indice de qualité de l'air (AQI) basé sur la géolocalisation de l'utilisateur. Le projet est conçu pour mettre en pratique les services cloud d'AWS dans un contexte réel, tout en étant simple, utile, et facilement déployable.
+![CI/CD](https://github.com/carmelo0511/aircare/actions/workflows/deploy.yml/badge.svg)
 
-🔗 **Lien public** : [https://d385ybljdjmh2o.cloudfront.net](https://d385ybljdjmh2o.cloudfront.net)
+**AirCare** is a serverless cloud application that displays the Air Quality Index (AQI) in real time based on the user’s geolocation. Built to showcase AWS services in a real-world context, it is fully deployed and automated via GitHub Actions.
 
----
-
-## 🧱 Fonctionnalités principales
-
-* Récupération automatique de la position GPS de l’utilisateur
-* Appel backend sécurisé (AWS API Gateway + Lambda) avec la latitude/longitude
-* Récupération des données de qualité de l’air via OpenWeatherMap API
-* Affichage clair de l’indice AQI, PM2.5 et PM10
-* Déploiement frontend en HTTPS via AWS S3 + CloudFront
+🔗 **Live Demo**: https://d385ybljdjmh2o.cloudfront.net
 
 ---
 
-## 🖼️ Architecture Cloud
+## 🧱 Key Features
+
+- Automatic retrieval of the user’s GPS location
+- Reverse geocoding to display the **city name**
+- Secure backend call (AWS API Gateway + Lambda) using Axios
+- Fetching and display of AQI, PM2.5, and PM10
+- Responsive, styled, and accessible frontend
+- Full CI/CD pipeline:
+  - Automatic frontend deployment to S3
+  - CloudFront cache invalidation
+  - Lambda packaging and updates
+
+---
+
+## 🖼️ Cloud Architecture
 
 ```plaintext
-[Utilisateur] ⇄ [CloudFront HTTPS] ⇄ [S3 Static Website Hosting]
-                              ⇓
-                         [API Gateway HTTP POST /air]
-                              ⇓
-                         [AWS Lambda (Node.js)]
-                              ⇓
-               [OpenWeatherMap Air Quality API (REST)]
+[User] ⇄ [CloudFront (HTTPS)] ⇄ [S3 Static Website Hosting]
+                               ⇓
+                          [API Gateway POST /air]
+                               ⇓
+                   [AWS Lambda (Node.js + Reverse Geo)]
+                               ⇓
+             [OpenWeatherMap Air Pollution API (REST)]
 ```
 
 ---
 
-## 🧰 Technologies & Services AWS utilisés
+## 🧰 AWS Stack & Services
 
-| Composant          | Détail                                    |
-| ------------------ | ----------------------------------------- |
-| Frontend           | HTML / CSS / JS                           |
-| Backend            | AWS Lambda (Node.js + Axios)              |
-| API Gateway        | HTTP API, méthode POST, CORS activé       |
-| OpenWeatherMap API | Données AQI (clé stockée en variable env) |
-| Hébergement        | S3 (public, static website)               |
-| CDN + HTTPS        | AWS CloudFront avec redirection HTTPS     |
-
----
-
-## 🔒 Sécurité & bonnes pratiques
-
-* ✅ Clé API **non exposée côté frontend** (stockée dans Lambda → process.env)
-* ✅ CORS configuré pour éviter les erreurs navigateur
-* ⚠️ Pour aller plus loin : utiliser un rôle IAM dédié + secrets manager
+| Component             | Details                                                          |
+|-----------------------|------------------------------------------------------------------|
+| Frontend              | HTML / CSS / Vanilla JS                                          |
+| Backend               | AWS Lambda (Node.js + axios)                                     |
+| API Gateway           | HTTP API, POST method, CORS enabled                              |
+| CI/CD                 | GitHub Actions (deploy S3, invalidate CloudFront, update Lambda) |
+| Hosting               | S3 Static Website + CloudFront CDN (HTTPS)                       |
+| Reverse Geocoding     | OpenWeatherMap Geocoding API                                     |
+| Air Quality Data      | OpenWeatherMap Air Pollution API                                 |
 
 ---
 
-## 🚀 Instructions de déploiement simplifié
+## 🚀 Deployment & CI/CD
 
-1. Créer un bucket S3 avec public access et static hosting
-2. Uploader `index.html`, `style.css`, `script.js`
-3. Créer une fonction Lambda en Node.js avec Axios
-4. Lier Lambda à API Gateway (HTTP POST, route `/air`)
-5. Ajouter une variable d’environnement : `OPENWEATHER_API_KEY`
-6. Activer CORS sur API Gateway
-7. Créer une distribution CloudFront pointant sur S3
-8. Forcer HTTPS, définir `index.html` comme racine
+1. **Push** to `main` triggers GitHub Actions  
+2. Sync frontend to S3 (`aws s3 sync`)  
+3. Invalidate CloudFront cache (`aws cloudfront create-invalidation`)  
+4. Install dependencies and package Lambda  
+5. Update Lambda function (`aws lambda update-function-code`)
 
 ---
 
-## ✅ Améliorations futures (Roadmap Cloud)
+## ✅ Future Improvements
 
-* [ ] Ajouter CloudWatch Logs & Monitoring détaillé (latence, erreurs)
-* [ ] Enregistrer les requêtes AQI dans DynamoDB (log utilisateur)
-* [ ] Ajouter des alertes via SNS (ex: AQI > 4)
-* [ ] Support multi-langues (fr/en)
-* [ ] Nom de domaine personnalisé (Route 53 + certificat ACM)
+- Custom domain via Route 53 & ACM  
+- Infrastructure as Code (Terraform / CloudFormation)  
+- CloudWatch monitoring & SNS alerts  
+- Persist AQI history in DynamoDB  
+- CI build status badge (added above)
+
+---
+
+## 📂 Repository Structure
+
+```plaintext
+aircare/
+├── aircare/                 # Frontend files
+│   ├── index.html
+│   ├── style.css
+│   ├── script.js
+│   └── assets/              # images, fonts, etc.
+├── aircare/backend/         # Lambda function code
+│   └── index.js
+├── .github/workflows/       # CI/CD pipeline
+│   └── deploy.yml
+├── README.md
+└── lambda_deploy.zip        # generated by CI on deploy
+```
 
 ---
 
-## 📂 Auteur
+## 📜 Author
 
-Bryan Nakache
-Développeur Cloud Junior | Toronto 🇨🇦
-Projet personnel pour démontrer des compétences AWS (serverless, sécurité, déploiement)
+Bryan Nakache 🇨🇦  
+Junior Cloud Engineer – 2025  
 
----
+*Personal project demonstrating mastery of AWS serverless stack and CI/CD best practices.*
