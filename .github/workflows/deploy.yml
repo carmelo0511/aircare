@@ -1,4 +1,4 @@
-name: 🎉 Déployer Frontend & Backend
+name: 🚀 Déploiement complet frontend + backend vers S3 & Lambda
 
 on:
   push:
@@ -11,21 +11,17 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
 
       - name: Deploy Frontend to S3
-        run: |
-          cd frontend
-          npm install
-          npm run build
-          aws s3 sync ./dist s3://aircare-bryan --delete
+        run: aws s3 sync aircare/ s3://aircare-bryan --delete
 
       - name: Invalidate CloudFront Cache
         run: |
@@ -42,4 +38,4 @@ jobs:
         run: |
           aws lambda update-function-code \
             --function-name AirCareHandler \
-            --zip-file fileb://function.zip
+            --zip-file fileb://aircare-lambda/function.zip
