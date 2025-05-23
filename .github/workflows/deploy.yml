@@ -1,4 +1,4 @@
-name: 🚀 Deploy AirCare
+name: Déployer Frontend & Backend
 
 on:
   push:
@@ -21,11 +21,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
 
+      # Déploiement du frontend
       - name: Deploy Frontend to S3
         run: |
-          aws s3 sync ./aircare s3://$S3_BUCKET_NAME --exclude "backend/*" --delete
-        env:
-          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+          aws s3 sync ./aircare s3://aircare-bryan --delete
 
       - name: Invalidate CloudFront Cache
         run: |
@@ -33,14 +32,15 @@ jobs:
             --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*"
 
+      # Déploiement de la Lambda
       - name: Package Lambda
         run: |
-          cd aircare/backend
-          npm install --production axios
-          zip -r ../../lambda_deploy.zip index.js node_modules
+          cd aircare-lambda
+          npm install
+          zip -r function.zip index.js node_modules package.json
 
       - name: Deploy Lambda Function
         run: |
           aws lambda update-function-code \
-            --function-name ${{ secrets.LAMBDA_FUNCTION_NAME }} \
-            --zip-file fileb://lambda_deploy.zip
+            --function-name AirCareHandler \
+            --zip-file fileb://aircare-lambda/function.zip
