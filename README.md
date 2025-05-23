@@ -24,17 +24,18 @@
 
 ---
 
-## 🧱 Cloud Architecture
+## 🧭 Architecture Diagram
 
-```plaintext
-[User] ⇄ [CloudFront (HTTPS)] ⇄ [S3 - Static Site Hosting]
-                          ⇓
-                   [API Gateway - POST /air]
-                          ⇓
-            [AWS Lambda (Node.js + Reverse Geocoding)]
-                          ⇓
-        [OpenWeatherMap API - Air Pollution (REST)]
-```
+![Architecture](./assets/aircare-architecture.png)
+
+> Diagram generated with draw.io
+
+**Architecture Flow**:
+1. User accesses app via CloudFront (served from S3).
+2. Frontend calls API Gateway with user's coordinates.
+3. API Gateway triggers Lambda.
+4. Lambda fetches AQI from OpenWeatherMap API.
+5. Data is returned to frontend and displayed to user.
 
 ---
 
@@ -81,6 +82,16 @@ aircare/
 
 ---
 
+🧠 Lessons Learned
+
+Deploying secure and scalable frontend with S3 + CloudFront
+Using Lambda/API Gateway for real-time API backend
+Integrating external APIs (OpenWeatherMap)
+Implementing CI with GitHub Actions
+Designing AWS architectures for real-world use cases
+
+---
+
 ## 🛠️ Planned Improvements
 
 - **Infrastructure as Code (IaC)**: Add Terraform or AWS CloudFormation to manage infrastructure declaratively
@@ -89,15 +100,8 @@ aircare/
 
 ---
 
-## 👨‍💻 Author
+👨‍💻 Author
 
-**Bryan Nakache**  
-Junior Cloud Engineer – 2025
-
-A personal project to demonstrate cloud architecture, serverless backend, and modern deployment workflows on AWS.
-
----
-
-## 📄 License
-
-MIT License – feel free to fork, contribute, and expand the project!
+Bryan Nakache
+🇫🇷 Bilingual French-English | ☁️ Aspiring Cloud Engineer
+🔗 GitHub Profile
