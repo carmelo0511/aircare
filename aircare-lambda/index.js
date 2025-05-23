@@ -1,29 +1,41 @@
-const axios = require('axios');
+const axios = require("axios");
 
 exports.handler = async (event) => {
   try {
-    const { lat, lon } = JSON.parse(event.body);
+    const body = typeof event.body === "string" ? JSON.parse(event.body) : event.body;
+    const { lat, lon } = body;
 
-    const apiKey = process.env.OPENWEATHER_API_KEY;
-    const url = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+    const apiKey = process.env.WEATHER_API_KEY;
+    if (!lat || !lon || !apiKey) {
+      throw new Error("Missing lat/lon or WEATHER_API_KEY");
+    }
 
-    const response = await axios.get(url);
+    const airUrl = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=fr`;
+
+    const [airRes, weatherRes] = await Promise.all([
+      axios.get(airUrl),
+      axios.get(weatherUrl),
+    ]);
 
     return {
       statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(response.data),
+      body: JSON.stringify({
+        city: weatherRes.data.name || "Unknown",
+        data: {
+          list: airRes.data.list,
+          weather: weatherRes.data.weather,
+        },
+      }),
     };
-
-  } catch (error) {
-    console.error("Erreur Lambda:", error.message);
+  } catch (err) {
+    console.error("Lambda error:", err.message);
     return {
       statusCode: 500,
-      headers: { 'Access-Control-Allow-Origin': '*' },
-      body: JSON.stringify({ error: 'API call failed' }),
+      body: JSON.stringify({
+        error: "Lambda failed",
+        details: err.message,
+      }),
     };
   }
 };

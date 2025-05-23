@@ -1,27 +1,40 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AirCare – Qualité de l'air</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AirCare</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <h1>🌍 AirCare</h1>
-    <p>Surveillez la qualité de l'air autour de vous en temps réel.</p>
+    <h1>🌬️ AirCare - Surveillance de l'air</h1>
 
-    <button onclick="getAirQuality()">Obtenir la qualité de l'air</button>
+    <div class="controls">
+      <button id="fetchButton">📍 Obtenir la qualité de l'air ici</button>
 
-    <div id="location" class="location"></div>
-    <div id="results" class="results"></div>
+      <select id="citySelector">
+        <option value="">-- ou sélectionner une ville --</option>
+        <option value="43.651070,-79.347015">Toronto</option>
+        <option value="45.501690,-73.567253">Montréal</option>
+        <option value="48.856613,2.352222">Paris</option>
+        <option value="40.712776,-74.005974">New York</option>
+        <option value="-23.550520,-46.633308">São Paulo</option>
+      </select>
+    </div>
+
+    <div id="result"></div>
   </div>
-  
-  <footer>
-    <p>Développé par Bryan Nakache – 2025</p>
-  </footer>
 
   <script src="script.js"></script>
+  <script>
+    document.getElementById("citySelector").addEventListener("change", (e) => {
+      const value = e.target.value;
+      if (value) {
+        const [lat, lon] = value.split(",");
+        fetchData(parseFloat(lat), parseFloat(lon));
+      }
+    });
+  </script>
 </body>
 </html>

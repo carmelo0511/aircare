@@ -1,72 +1,74 @@
 body {
-  font-family: 'Inter', sans-serif;
-  background: #f4f8fb;
-  color: #333;
   margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+  font-family: "Segoe UI", sans-serif;
+  background: linear-gradient(to bottom, #e0ecff, #c9e0ff);
+  text-align: center;
 }
 
 .container {
   max-width: 600px;
-  margin: auto;
-  padding: 2em;
-  text-align: center;
+  margin: 4rem auto;
+  padding: 2rem;
 }
 
 h1 {
-  color: #0077cc;
-  font-weight: 600;
-  margin-bottom: 0.2em;
+  font-size: 2.5rem;
+  margin-bottom: 0.2rem;
 }
 
-p {
-  color: #555;
-  margin-bottom: 2em;
+.controls {
+  margin: 1.5rem 0;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
-button {
-  background-color: #0077cc;
+.main-btn {
+  background-color: #2dca73;
   color: white;
+  font-weight: bold;
   border: none;
-  padding: 1em 2em;
-  font-size: 1em;
-  border-radius: 8px;
+  padding: 0.8rem 1.4rem;
+  border-radius: 25px;
+  font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  transition: 0.3s ease;
 }
 
-button:hover {
-  background-color: #005fa3;
+.main-btn:hover {
+  background-color: #1fa958;
 }
 
-.location {
-  margin-top: 1.5em;
-  font-style: italic;
-  color: #666;
+select {
+  padding: 0.6rem 1rem;
+  border-radius: 20px;
+  font-size: 1rem;
 }
 
-.results {
-  margin-top: 2em;
+.result-card {
   background: white;
-  padding: 1.5em;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  display: inline-block;
-  text-align: left;
+  padding: 2rem;
+  margin-top: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
-.results p {
-  margin: 0.5em 0;
+.success {
+  background-color: #d4f8dd;
+  color: #14532d;
+  padding: 0.7rem;
+  margin: 1rem auto;
+  border-radius: 10px;
+  font-weight: bold;
 }
 
-footer {
-  margin-top: auto;
-  background: #eaeff3;
-  padding: 1em;
-  text-align: center;
-  font-size: 0.9em;
-  color: #777;
+.error {
+  background-color: #fee2e2;
+  color: #991b1b;
+  padding: 0.7rem;
+  margin: 1rem auto;
+  border-radius: 10px;
+  font-weight: bold;
 }
