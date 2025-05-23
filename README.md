@@ -1,76 +1,58 @@
-# 🌍 AirCare – Real-time Air Quality Monitoring
+# 🌬️ AirCare – Real-Time Air Quality Monitoring
 
-![CI/CD](https://github.com/carmelo0511/aircare/actions/workflows/deploy.yml/badge.svg)
+![Deploy](https://github.com/carmelo0511/aircare/actions/workflows/deploy.yml/badge.svg)
 
-**AirCare** is a serverless cloud application that displays the Air Quality Index (AQI) in real time based on the user’s geolocation. Built to showcase AWS services in a real-world context, it is fully deployed and automated via GitHub Actions.
+**AirCare** is a fully cloud-native application that displays real-time Air Quality Index (AQI) based on the user's geolocation. Built to demonstrate hands-on AWS services usage, it is fully deployed and automated using GitHub Actions.
 
-🔗 **Live Demo**: https://d385ybljdjmh2o.cloudfront.net
+🔗 [Live Demo](https://d385ybljdjmh2o.cloudfront.net)
 
 ---
 
-## 🧱 Key Features
+## ⚙️ Key Features
 
-- Automatic retrieval of the user’s GPS location
-- Reverse geocoding to display the **city name**
-- Secure backend call (AWS API Gateway + Lambda) using Axios
-- Fetching and display of AQI, PM2.5, and PM10
-- Responsive, styled, and accessible frontend
+- Automatic geolocation detection using the browser
+- Manual city selector as fallback
+- Reverse geocoding to display city name
+- Secure backend call (AWS API Gateway + Lambda using Axios)
+- AQI, PM2.5, and PM10 data retrieval and display
+- Friendly message based on AQI level (1–5)
+- Responsive and accessible frontend UI
 - Full CI/CD pipeline:
-  - Automatic frontend deployment to S3
+  - Frontend deployment to S3
   - CloudFront cache invalidation
-  - Lambda packaging and updates
+  - Lambda function packaging and deployment
 
 ---
 
-## 🖼️ Cloud Architecture
+## 🧱 Cloud Architecture
 
 ```plaintext
-[User] ⇄ [CloudFront (HTTPS)] ⇄ [S3 Static Website Hosting]
-                               ⇓
-                          [API Gateway POST /air]
-                               ⇓
-                   [AWS Lambda (Node.js + Reverse Geo)]
-                               ⇓
-             [OpenWeatherMap Air Pollution API (REST)]
+[User] ⇄ [CloudFront (HTTPS)] ⇄ [S3 - Static Site Hosting]
+                          ⇓
+                   [API Gateway - POST /air]
+                          ⇓
+            [AWS Lambda (Node.js + Reverse Geocoding)]
+                          ⇓
+        [OpenWeatherMap API - Air Pollution (REST)]
 ```
 
 ---
 
-## 🧰 AWS Stack & Services
+## 🧰 AWS Stack & Services Used
 
-| Component             | Details                                                          |
-|-----------------------|------------------------------------------------------------------|
-| Frontend              | HTML / CSS / Vanilla JS                                          |
-| Backend               | AWS Lambda (Node.js + axios)                                     |
-| API Gateway           | HTTP API, POST method, CORS enabled                              |
-| CI/CD                 | GitHub Actions (deploy S3, invalidate CloudFront, update Lambda) |
-| Hosting               | S3 Static Website + CloudFront CDN (HTTPS)                       |
-| Reverse Geocoding     | OpenWeatherMap Geocoding API                                     |
-| Air Quality Data      | OpenWeatherMap Air Pollution API                                 |
-
----
-
-## 🚀 Deployment & CI/CD
-
-1. **Push** to `main` triggers GitHub Actions  
-2. Sync frontend to S3 (`aws s3 sync`)  
-3. Invalidate CloudFront cache (`aws cloudfront create-invalidation`)  
-4. Install dependencies and package Lambda  
-5. Update Lambda function (`aws lambda update-function-code`)
+| Component         | Details                                     |
+|------------------|---------------------------------------------|
+| Frontend         | HTML / CSS / Vanilla JavaScript             |
+| Backend          | AWS Lambda (Node.js + Axios)                |
+| API Gateway      | HTTP API, POST method, CORS enabled         |
+| CI/CD            | GitHub Actions (S3 deploy, CloudFront invalidation, Lambda update) |
+| Hosting          | S3 static site + CloudFront CDN (HTTPS)     |
+| Reverse Geocoding| OpenWeatherMap API                          |
+| AQI Data         | OpenWeatherMap - Air Pollution endpoint     |
 
 ---
 
-## ✅ Future Improvements
-
-- Custom domain via Route 53 & ACM  
-- Infrastructure as Code (Terraform / CloudFormation)  
-- CloudWatch monitoring & SNS alerts  
-- Persist AQI history in DynamoDB  
-- CI build status badge (added above)
-
----
-
-## 📂 Repository Structure
+## 📁 Repository Structure
 
 ```plaintext
 aircare/
@@ -78,20 +60,44 @@ aircare/
 │   ├── index.html
 │   ├── style.css
 │   ├── script.js
-│   └── assets/              # images, fonts, etc.
-├── aircare/backend/         # Lambda function code
-│   └── index.js
+│   └── assets/              # Images, fonts, etc.
+├── aircare-lambda/          # Lambda function code
+│   ├── index.js
+│   ├── package.json
+│   └── node_modules/
 ├── .github/workflows/       # CI/CD pipeline
 │   └── deploy.yml
 ├── README.md
-└── lambda_deploy.zip        # generated by CI on deploy
 ```
 
 ---
 
-## 📜 Author
+## 🚀 Deployment & CI/CD
 
-Bryan Nakache 🇨🇦  
-Junior Cloud Engineer – 2025  
+1. Pushing to `main` triggers GitHub Actions
+2. Frontend is synced to S3 (`aws s3 sync`)
+3. CloudFront cache is invalidated (`aws cloudfront create-invalidation`)
+4. Lambda function is packaged and deployed (`aws lambda update-function-code`)
 
-*Personal project demonstrating mastery of AWS serverless stack and CI/CD best practices.*
+---
+
+## 🛠️ Planned Improvements
+
+- **Infrastructure as Code (IaC)**: Add Terraform or AWS CloudFormation to manage infrastructure declaratively
+- **Monitoring & Alerts**: Integrate AWS CloudWatch metrics and SNS alerts
+- **AQI History Storage**: Use DynamoDB to store and visualize air quality trends
+
+---
+
+## 👨‍💻 Author
+
+**Bryan Nakache**  
+Junior Cloud Engineer – 2025
+
+A personal project to demonstrate cloud architecture, serverless backend, and modern deployment workflows on AWS.
+
+---
+
+## 📄 License
+
+MIT License – feel free to fork, contribute, and expand the project!
