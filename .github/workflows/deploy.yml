@@ -1,4 +1,4 @@
-name: 🚀 Déploiement complet frontend + backend vers S3 & Lambda
+name: 🚀 Déploiement auto avec cache busting
 
 on:
   push:
@@ -20,18 +20,28 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
 
-      # --- FRONTEND DEPLOY ---
-      - name: Deploy Frontend to S3
+      - name: Generate versioned index
         run: |
-          aws s3 sync ./aircare s3://aircare-bryan --delete
+          TIMESTAMP=$(date +%Y-%m-%d-%H-%M)
+          export VERSION="index.$TIMESTAMP.html"
 
-      - name: Invalidate CloudFront Cache
+          cp aircare/index.html aircare/$VERSION
+
+          echo "<meta http-equiv='refresh' content='0; url=$VERSION'>" > aircare/index.html
+          echo "➡️ index.html now redirects to $VERSION"
+
+      - name: Deploy Frontend to S3 (with cache busting)
+        run: |
+          aws s3 cp ./aircare/ s3://aircare-bryan/ --recursive \
+            --cache-control "no-cache, no-store, must-revalidate" \
+            --metadata-directive REPLACE
+
+      - name: Invalidate CloudFront cache (optional safety)
         run: |
           aws cloudfront create-invalidation \
             --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
-            --paths "/*"
-
-      # --- BACKEND DEPLOY ---
+            --paths "/index.html"
+          
       - name: Package Lambda
         run: |
           cd aircare-lambda
