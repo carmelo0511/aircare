@@ -5,6 +5,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const resultDiv = document.getElementById("result");
   const loader = document.getElementById("loader");
 
+  if (!getAirQualityBtn || !citySelector || !resultDiv || !loader) {
+    console.error("Un ou plusieurs éléments HTML sont manquants.");
+    return;
+  }
+
   getAirQualityBtn.addEventListener("click", () => {
     if (navigator.geolocation) {
       loader.classList.remove("hidden");
