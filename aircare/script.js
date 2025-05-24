@@ -1,27 +1,29 @@
 document.addEventListener('DOMContentLoaded', () => {
   const getAirQualityBtn = document.getElementById('getAirQuality');
-  const citySelector = document.getElementById('citySelector');
-  const resultDiv = document.getElementById('result');
-  const loader = document.getElementById('loader');
+  const citySelector     = document.getElementById('citySelector');
+  const resultDiv        = document.getElementById('result');
+  const loader           = document.getElementById('loader');
+
+  // En local on pointe directement vers l’API Gateway, en prod on utilise le path relatif.
+  const baseURL  = window.location.hostname.includes('localhost')
+    ? 'https://khwxkc19ui.execute-api.ca-central-1.amazonaws.com'
+    : '';
+  const endpoint = `${baseURL}/air`;
 
   async function fetchAirQuality(data) {
     loader.classList.remove('hidden');
     resultDiv.innerHTML = '';
 
     try {
-      const response = await fetch('https://api.aircare.bryan.cloud/air', {
-        method: 'POST',
+      const res  = await fetch(endpoint, {
+        method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        body:    JSON.stringify(data),
       });
-
-      const json = await response.json();
-      if (!json || !json.data) {
-        throw new Error('Réponse invalide');
-      }
+      const json = await res.json();
+      if (!json?.data) throw new Error('Réponse invalide');
 
       const { city, aqi, category, advice } = json.data;
-
       resultDiv.innerHTML = `
         <p class="font-bold text-xl mb-2">${city}</p>
         <p>Indice AQI : <span class="font-semibold">${aqi}</span></p>
@@ -35,26 +37,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  getAirQualityBtn.addEventListener('click', () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          const { latitude, longitude } = position.coords;
-          fetchAirQuality({ latitude, longitude });
-        },
-        error => {
-          resultDiv.innerHTML = `<p class="text-red-600">Géolocalisation refusée ou échouée.</p>`;
-        }
-      );
-    } else {
-      resultDiv.innerHTML = `<p class="text-red-600">Géolocalisation non prise en charge.</p>`;
-    }
-  });
+  if (getAirQualityBtn) {
+    getAirQualityBtn.addEventListener('click', () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          ({ coords }) => fetchAirQuality({ latitude: coords.latitude, longitude: coords.longitude }),
+          () => resultDiv.innerHTML = `<p class="text-red-600">Géoloc échouée.</p>`
+        );
+      } else {
+        resultDiv.innerHTML = `<p class="text-red-600">Géolocalisation non supportée.</p>`;
+      }
+    });
+  }
 
-  citySelector.addEventListener('change', () => {
-    const city = citySelector.value;
-    if (city) {
-      fetchAirQuality({ city });
-    }
-  });
+  if (citySelector) {
+    citySelector.addEventListener('change', () => {
+      const city = citySelector.value;
+      if (city) fetchAirQuality({ city });
+    });
+  }
 });
