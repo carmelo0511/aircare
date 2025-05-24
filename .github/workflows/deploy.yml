@@ -1,4 +1,4 @@
-name: 🚀 Déploiement auto avec cache busting
+name: 🚀 Deploy with cache busting
 
 on:
   push:
@@ -10,38 +10,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Configure AWS Credentials
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
 
-      - name: Generate versioned index
+      - name: Create versioned index and redirect
         run: |
           TIMESTAMP=$(date +%Y-%m-%d-%H-%M)
-          export VERSION="index.$TIMESTAMP.html"
-
+          VERSION="index.$TIMESTAMP.html"
           cp aircare/index.html aircare/$VERSION
-
           echo "<meta http-equiv='refresh' content='0; url=$VERSION'>" > aircare/index.html
-          echo "➡️ index.html now redirects to $VERSION"
+          echo "Build version: $VERSION"
 
-      - name: Deploy Frontend to S3 (with cache busting)
+      - name: Sync to S3 with cache control
         run: |
-          aws s3 cp ./aircare/ s3://aircare-bryan/ --recursive \
+          aws s3 cp ./aircare s3://aircare-bryan --recursive \
             --cache-control "no-cache, no-store, must-revalidate" \
             --metadata-directive REPLACE
 
-      - name: Invalidate CloudFront cache (optional safety)
+      - name: Invalidate index.html on CloudFront
         run: |
           aws cloudfront create-invalidation \
             --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/index.html"
-          
+
       - name: Package Lambda
         run: |
           cd aircare-lambda
@@ -52,4 +50,3 @@ jobs:
           aws lambda update-function-code \
             --function-name AirCareHandler \
             --zip-file fileb://aircare-lambda/function.zip
-

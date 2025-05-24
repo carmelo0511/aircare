@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>AirCare - Surveillance de l'air</title>
+  <meta charset="UTF-8" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AirCare - Surveillance de l'air</title>
+  <script src="https://cdn.tailwindcss.com" defer></script>
 </head>
 <body class="bg-gradient-to-b from-blue-100 to-white min-h-screen flex flex-col items-center justify-center text-center px-4">
+
   <h1 class="text-4xl font-bold mb-4">🌬️ AirCare - Surveillance de l'air</h1>
 
   <button id="getAirQuality" class="bg-blue-600 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-700 transition mb-4">
@@ -16,7 +18,7 @@
   </button>
 
   <select id="citySelector" class="p-2 border rounded mb-4">
-    <option value="">-- Ou choisir une ville --</option>
+    <option value="">-- ou sélectionner une ville --</option>
     <option value="Montreal">Montréal</option>
     <option value="Toronto">Toronto</option>
     <option value="Paris">Paris</option>
@@ -26,15 +28,15 @@
   <div id="loader" class="hidden mt-4">
     <svg class="animate-spin h-6 w-6 text-blue-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
       <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-      <path class="opacity-75" fill="currentColor"
-            d="M4 12a8 8 0 018-8v8H4z"></path>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
     </svg>
     <p class="text-blue-600 mt-2">Chargement...</p>
   </div>
 
   <div id="result" class="text-lg mt-4"></div>
-  <p class="mt-6 text-sm text-gray-500">Build : 2025-05-24 15:45</p>
-</body>
-<script src="script.js"></script>
-</html>
 
+  <p class="text-sm mt-8 text-gray-500">Build : 2025-05-24 16:30 ✅</p>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
