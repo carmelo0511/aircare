@@ -8,7 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -23,11 +23,7 @@ jobs:
       # --- FRONTEND DEPLOY ---
       - name: Deploy Frontend to S3
         run: |
-          aws s3 cp ./aircare/ s3://aircare-bryan/ --recursive \
-            --exclude "*" \
-            --include "index.html" \
-            --include "style.css" \
-            --include "script.js"
+          aws s3 sync ./aircare s3://aircare-bryan --delete
 
       - name: Invalidate CloudFront Cache
         run: |
@@ -46,3 +42,4 @@ jobs:
           aws lambda update-function-code \
             --function-name AirCareHandler \
             --zip-file fileb://aircare-lambda/function.zip
+
