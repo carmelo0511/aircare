@@ -1,100 +1,76 @@
-const apiUrl = "https://khwxkc19ui.execute-api.ca-central-1.amazonaws.com/air";
-const resultBox = document.getElementById("result");
-const button = document.getElementById("fetchButton");
+const API_URL = "https://khwxkc19ui.execute-api.ca-central-1.amazonaws.com/air"; // Ton endpoint
+const getAirQualityBtn = document.getElementById("getAirQuality");
+const citySelector = document.getElementById("citySelector");
+const resultDiv = document.getElementById("result");
+const loader = document.getElementById("loader");
 
-const getAQIMessage = (aqi) => {
-  switch (aqi) {
-    case 1:
-      return {
-        message: "✅ L’air est très bon pour les personnes asthmatiques.",
-        class: "good"
-      };
-    case 2:
-      return {
-        message: "🟢 L’air est acceptable mais peut gêner les personnes très sensibles.",
-        class: "moderate"
-      };
-    case 3:
-      return {
-        message: "🟡 L’air peut être gênant pour les personnes asthmatiques sensibles.",
-        class: "unhealthy-sensitive"
-      };
-    case 4:
-      return {
-        message: "🟠 L’air est mauvais pour les personnes asthmatiques.",
-        class: "unhealthy"
-      };
-    case 5:
-      return {
-        message: "🔴 L’air est très mauvais pour les personnes asthmatiques. Évitez les sorties.",
-        class: "very-unhealthy"
-      };
-    default:
-      return {
-        message: "⚠️ Indice de qualité de l'air inconnu.",
-        class: "unknown"
-      };
+getAirQualityBtn.addEventListener("click", () => {
+  if (navigator.geolocation) {
+    loader.classList.remove("hidden");
+    resultDiv.innerHTML = "";
+    navigator.geolocation.getCurrentPosition(
+      pos => sendRequest(pos.coords.latitude, pos.coords.longitude),
+      () => showError("Géolocalisation refusée.")
+    );
+  } else {
+    showError("Géolocalisation non supportée.");
   }
-};
+});
 
-const displayData = (data) => {
-  const { city, data: airData, weather } = data;
+citySelector.addEventListener("change", () => {
+  const city = citySelector.value;
+  if (!city) return;
 
-  const aqi = airData.list[0].main.aqi;
-  const components = airData.list[0].components;
-  const weatherData = weather?.[0];
+  const cities = {
+    "Montreal": { lat: 45.5017, lon: -73.5673 },
+    "Toronto": { lat: 43.65107, lon: -79.347015 },
+    "Paris": { lat: 48.8566, lon: 2.3522 },
+    "Nice": { lat: 43.7102, lon: 7.2620 }
+  };
 
-  const messageData = getAQIMessage(aqi);
+  const { lat, lon } = cities[city];
+  loader.classList.remove("hidden");
+  resultDiv.innerHTML = "";
+  sendRequest(lat, lon);
+});
 
-  resultBox.innerHTML = `
-    <div class="card">
-      <h2>${city}</h2>
-      ${weatherData ? `
-        <img src="https://openweathermap.org/img/wn/${weatherData.icon}@2x.png" alt="${weatherData.description}" />
-        <p><strong>Météo :</strong> ${weatherData.main} (${weatherData.description})</p>
-      ` : ""}
-      <p><strong>Indice Qualité de l’air (AQI) :</strong> ${aqi}</p>
-      <div class="alert ${messageData.class}">
-        ${messageData.message}
-      </div>
-      <h3>Composants (µg/m³)</h3>
-      <pre>${Object.entries(components).map(([k, v]) => `${k.toUpperCase()} : ${v}`).join('\n')}</pre>
-    </div>
-  `;
-};
-
-const fetchData = (lat, lon) => {
-  resultBox.innerHTML = "Chargement...";
-  fetch(apiUrl, {
+function sendRequest(lat, lon) {
+  fetch(API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ lat, lon })
   })
     .then(res => res.json())
     .then(data => {
-      if (data?.data?.list) {
-        displayData(data);
+      loader.classList.add("hidden");
+      if (data.error) {
+        showError(data.error);
       } else {
-        throw new Error("Réponse invalide");
+        const aqi = data.aqi;
+        const color = getColor(aqi);
+        resultDiv.innerHTML = `
+          <div class="p-4 rounded shadow text-white ${color}">
+            <p><strong>Ville :</strong> ${data.city}</p>
+            <p><strong>Température :</strong> ${data.temp}°C</p>
+            <p><strong>Humidité :</strong> ${data.humidity}%</p>
+            <p><strong>Qualité de l’air (AQI) :</strong> ${aqi}</p>
+          </div>`;
       }
     })
-    .catch(err => {
-      console.error(err);
-      resultBox.innerHTML = `<div class="alert error">❌ Erreur lors de la récupération des données.</div>`;
+    .catch(() => {
+      loader.classList.add("hidden");
+      showError("Erreur réseau.");
     });
-};
+}
 
-button.addEventListener("click", () => {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        fetchData(position.coords.latitude, position.coords.longitude);
-      },
-      () => {
-        alert("Impossible de récupérer la position. Veuillez autoriser l’accès à la localisation.");
-      }
-    );
-  } else {
-    alert("La géolocalisation n’est pas prise en charge par ce navigateur.");
-  }
-});
+function getColor(aqi) {
+  if (aqi <= 1) return "bg-green-500";
+  if (aqi <= 2) return "bg-yellow-400";
+  if (aqi <= 3) return "bg-orange-500";
+  return "bg-red-600";
+}
+
+function showError(message) {
+  loader.classList.add("hidden");
+  resultDiv.innerHTML = `<p class="text-red-600">${message}</p>`;
+}

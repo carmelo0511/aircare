@@ -1,74 +1,17 @@
 body {
-  margin: 0;
-  font-family: "Segoe UI", sans-serif;
-  background: linear-gradient(to bottom, #e0ecff, #c9e0ff);
+  font-family: sans-serif;
   text-align: center;
-}
-
-.container {
-  max-width: 600px;
-  margin: 4rem auto;
+  background: #d0e7f9;
   padding: 2rem;
 }
 
-h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.2rem;
-}
-
-.controls {
-  margin: 1.5rem 0;
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.main-btn {
-  background-color: #2dca73;
-  color: white;
-  font-weight: bold;
-  border: none;
-  padding: 0.8rem 1.4rem;
-  border-radius: 25px;
-  font-size: 1rem;
-  cursor: pointer;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-  transition: 0.3s ease;
-}
-
-.main-btn:hover {
-  background-color: #1fa958;
-}
-
-select {
-  padding: 0.6rem 1rem;
-  border-radius: 20px;
+select, button {
+  margin: 1rem;
+  padding: 0.5rem;
   font-size: 1rem;
 }
 
-.result-card {
-  background: white;
-  border-radius: 10px;
-  padding: 2rem;
-  margin-top: 1.5rem;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-}
-
-.success {
-  background-color: #d4f8dd;
-  color: #14532d;
-  padding: 0.7rem;
-  margin: 1rem auto;
-  border-radius: 10px;
-  font-weight: bold;
-}
-
-.error {
-  background-color: #fee2e2;
-  color: #991b1b;
-  padding: 0.7rem;
-  margin: 1rem auto;
-  border-radius: 10px;
-  font-weight: bold;
+#result {
+  margin-top: 2rem;
+  font-size: 1.2rem;
 }
