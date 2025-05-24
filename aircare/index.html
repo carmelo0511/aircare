@@ -1,15 +1,13 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>AirCare - Surveillance de l'air</title>
-
-  <!-- Anti-cache -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-
-  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gradient-to-b from-blue-100 to-white min-h-screen flex flex-col items-center justify-center text-center px-4">
@@ -36,8 +34,12 @@
   </div>
 
   <div id="result" class="text-lg mt-4"></div>
-  <p class="mt-6 text-gray-500 text-sm">Build : 2025-05-24 19:53 UTC ✅</p>
+
+  <p class="text-sm text-gray-600 mt-4">Build : <span id="buildTime"></span> ✅</p>
 
   <script src="script.js" defer></script>
+  <script>
+    document.getElementById("buildTime").textContent = new Date().toISOString().split('.')[0].replace('T', ' ') + ' UTC';
+  </script>
 </body>
 </html>

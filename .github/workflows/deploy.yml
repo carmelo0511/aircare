@@ -1,44 +1,33 @@
-name: 🚀 Deploy with cache busting
+name: 🚀 Déploiement auto avec cache-busting
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
 
-      - name: Create versioned index and redirect
+      - name: Deploy Frontend to S3
         run: |
-          TIMESTAMP=$(date +%Y-%m-%d-%H-%M)
-          VERSION="index.$TIMESTAMP.html"
-          cp aircare/index.html aircare/$VERSION
-          echo "<meta http-equiv='refresh' content='0; url=$VERSION'>" > aircare/index.html
-          echo "Build version: $VERSION"
+          aws s3 sync ./aircare s3://aircare-bryan/ --delete
 
-      - name: Sync to S3 with cache control
-        run: |
-          aws s3 cp ./aircare s3://aircare-bryan --recursive \
-            --cache-control "no-cache, no-store, must-revalidate" \
-            --metadata-directive REPLACE
-
-      - name: Invalidate index.html on CloudFront
+      - name: Invalidate CloudFront cache
         run: |
           aws cloudfront create-invalidation \
             --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
-            --paths "/index.html"
+            --paths "/*"
 
       - name: Package Lambda
         run: |
