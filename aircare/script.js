@@ -4,26 +4,33 @@ document.addEventListener('DOMContentLoaded', () => {
   const resultDiv        = document.getElementById('result');
   const loader           = document.getElementById('loader');
 
-  // En local on pointe directement vers l’API Gateway, en prod on utilise le path relatif.
-  const baseURL  = window.location.hostname.includes('localhost')
-    ? 'https://khwxkc19ui.execute-api.ca-central-1.amazonaws.com'
-    : '';
-  const endpoint = `${baseURL}/air`;
+  // Ne jamais POST sur le serveur statique local !  
+  // En local (localhost ou 127.0.0.1) → on pointe directement l'API Gateway
+  // En prod              → on appelle la route relative "/air" qui passera par CloudFront
+  const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+  const endpoint = isLocal
+    ? 'https://khwxkc19ui.execute-api.ca-central-1.amazonaws.com/air'
+    : '/air';
 
   async function fetchAirQuality(data) {
     loader.classList.remove('hidden');
     resultDiv.innerHTML = '';
 
     try {
-      const res  = await fetch(endpoint, {
+      const res = await fetch(endpoint, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify(data),
       });
-      const json = await res.json();
-      if (!json?.data) throw new Error('Réponse invalide');
 
-      const { city, aqi, category, advice } = json.data;
+      if (!res.ok) {
+        throw new Error(`API error ${res.status}`);
+      }
+
+      const json = await res.json();
+      const { city, aqi, category, advice } = json.data ?? {};
+      if (!city) throw new Error('Données manquantes');
+
       resultDiv.innerHTML = `
         <p class="font-bold text-xl mb-2">${city}</p>
         <p>Indice AQI : <span class="font-semibold">${aqi}</span></p>
