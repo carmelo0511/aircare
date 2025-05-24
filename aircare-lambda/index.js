@@ -8,16 +8,13 @@ const TABLE_NAME = "AQIHistory";
 exports.handler = async (event) => {
   try {
     const body = typeof event.body === "string" ? JSON.parse(event.body) : event.body;
-    console.info("Event body:", body);
-
     const { lat, lon } = body;
     const apiKey = process.env.WEATHER_API_KEY;
 
     if (!lat || !lon || !apiKey) {
-      console.error("API key is undefined!");
       return {
         statusCode: 500,
-        body: JSON.stringify({ error: "API key not configured" }),
+        body: JSON.stringify({ error: "Missing lat/lon or API key" }),
       };
     }
 
@@ -32,27 +29,28 @@ exports.handler = async (event) => {
     const airData = airResponse.data;
     const weatherData = weatherResponse.data;
 
-    const timestamp = new Date().toISOString();
-
-    const item = {
-      requestId: uuidv4(), // ⚠️ correspond à la clé primaire de ta table DynamoDB
-      timestamp,
-      lat,
-      lon,
-      aqi: airData.list[0].main.aqi,
-      temp: weatherData.main.temp,
-      humidity: weatherData.main.humidity,
+    const result = {
       city: weatherData.name,
+      temp: weatherData.main?.temp ?? null,
+      humidity: weatherData.main?.humidity ?? null,
+      aqi: airData.list?.[0]?.main?.aqi ?? null
     };
 
+    // Enregistrement dans DynamoDB
     await dynamo.put({
       TableName: TABLE_NAME,
-      Item: item,
+      Item: {
+        requestId: uuidv4(),
+        timestamp: new Date().toISOString(),
+        lat,
+        lon,
+        ...result
+      }
     }).promise();
 
     return {
       statusCode: 200,
-      body: JSON.stringify(item),
+      body: JSON.stringify(result)
     };
 
   } catch (error) {

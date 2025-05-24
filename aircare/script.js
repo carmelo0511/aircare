@@ -1,4 +1,4 @@
-const API_URL = "https://khwxkc19ui.execute-api.ca-central-1.amazonaws.com/air"; // Ton endpoint
+const API_URL = "https://khwxkc19ui.execute-api.ca-central-1.amazonaws.com/air";
 const getAirQualityBtn = document.getElementById("getAirQuality");
 const citySelector = document.getElementById("citySelector");
 const resultDiv = document.getElementById("result");
@@ -43,27 +43,41 @@ function sendRequest(lat, lon) {
     .then(res => res.json())
     .then(data => {
       loader.classList.add("hidden");
+
+      // 🔍 LOGS de debug complet
+      console.log("📦 Données reçues :", data);
+      console.log("🌡 Température :", data.temp);
+      console.log("💧 Humidité :", data.humidity);
+      console.log("🌫 AQI :", data.aqi);
+      console.log("🏙 Ville :", data.city);
+
       if (data.error) {
         showError(data.error);
       } else {
-        const aqi = data.aqi;
+        const temp = data.temp ?? "N/A";
+        const humidity = data.humidity ?? "N/A";
+        const aqi = data.aqi ?? "N/A";
+        const city = data.city ?? "Inconnue";
+
         const color = getColor(aqi);
         resultDiv.innerHTML = `
           <div class="p-4 rounded shadow text-white ${color}">
-            <p><strong>Ville :</strong> ${data.city}</p>
-            <p><strong>Température :</strong> ${data.temp}°C</p>
-            <p><strong>Humidité :</strong> ${data.humidity}%</p>
+            <p><strong>Ville :</strong> ${city}</p>
+            <p><strong>Température :</strong> ${temp}°C</p>
+            <p><strong>Humidité :</strong> ${humidity}%</p>
             <p><strong>Qualité de l’air (AQI) :</strong> ${aqi}</p>
           </div>`;
       }
     })
-    .catch(() => {
+    .catch((err) => {
       loader.classList.add("hidden");
+      console.error("❌ Erreur de requête :", err);
       showError("Erreur réseau.");
     });
 }
 
 function getColor(aqi) {
+  if (aqi === "N/A") return "bg-gray-400";
   if (aqi <= 1) return "bg-green-500";
   if (aqi <= 2) return "bg-yellow-400";
   if (aqi <= 3) return "bg-orange-500";
